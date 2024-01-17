@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Tickets</title>
+</head>
+<body>
+    <h1>Lista de Tickets</h1>
+    <ul>
+        {% for ticket in tickets %}
+            <li>
+                <strong>{{ ticket.titulo }}</strong>
+                <p>{{ ticket.descricao }}</p>
+                <p>Status: {{ ticket.status }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('abrir_ticket') }}">Abrir Novo Ticket</a>
+</body>
+</html>
