@@ -1,9 +1,20 @@
 import streamlit as st
 import pandas as pd
 from streamlit_option_menu import option_menu
-
+import sqlite3 as bd
+from streamlit_modal as Modal #https://discuss.streamlit.io/t/streamlit-popup-window-streamlit-modal/40310
 
 st.set_page_config(page_title="*Help Desk - Gerenciador de Ticket", page_icon=None, layout="wide", initial_sidebar_state="auto", menu_items=None)
+
+def sql_lite(label):
+    try:
+        connetion_de = bd.connect(".\HelpDesk\banco.db", check_same_thread = False)
+        cursor = connetion_de.cursor()
+        print("Connected to SQLite")
+    except bd.Error as error:
+        print("Conexão Falhou", error)
+        
+# Fonte de Ajuda: https://discuss.streamlit.io/t/streamlit-and-sqlite-update-database-by-sharing-the-web-app/26156
 
 with st.sidebar:
     selected = option_menu("Help Desk", ["Home", "Novo Chamado", "Consultar Chamado"], 
@@ -64,8 +75,11 @@ if selected == "Novo Chamado":
         container.write(bytes_data)
         
     
-    container.button("Enviar", on_click='')
+    Enviar = container.button("Enviar", on_click=(st.write(Title, Desc)))
     container.button("Cancelar", type="primary")
+    
+    modal = Modal(Key = "Demo key", title = )
+    
     
             
 if selected == "Consultar Chamado":
