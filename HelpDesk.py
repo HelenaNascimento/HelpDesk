@@ -1,21 +1,21 @@
 import streamlit as st
 import pandas as pd
 from streamlit_option_menu import option_menu
-import sqlite3 as bd
-from streamlit_modal as Modal #https://discuss.streamlit.io/t/streamlit-popup-window-streamlit-modal/40310
+import sqlite3 as bd #https://discuss.streamlit.io/t/streamlit-and-sqlite-update-database-by-sharing-the-web-app/26156
+import tkinter as tk
+from tkinter import ttk
+import os 
 
 st.set_page_config(page_title="*Help Desk - Gerenciador de Ticket", page_icon=None, layout="wide", initial_sidebar_state="auto", menu_items=None)
 
 def sql_lite(label):
     try:
-        connetion_de = bd.connect(".\HelpDesk\banco.db", check_same_thread = False)
-        cursor = connetion_de.cursor()
+        conn = bd.connect(".\HelpDesk\banco.db", check_same_thread = False)
+        c = conn.cursor()
         print("Connected to SQLite")
     except bd.Error as error:
         print("Conexão Falhou", error)
         
-# Fonte de Ajuda: https://discuss.streamlit.io/t/streamlit-and-sqlite-update-database-by-sharing-the-web-app/26156
-
 with st.sidebar:
     selected = option_menu("Help Desk", ["Home", "Novo Chamado", "Consultar Chamado"], 
         icons=['kanban', 'activity', "list"], menu_icon="cast", default_index=0)
@@ -74,11 +74,32 @@ if selected == "Novo Chamado":
         container.write("filename:", uploaded_file.name, icons = "cloud-update")
         container.write(bytes_data)
         
+    NORM_FONT= ("Verdana", 10)
     
-    Enviar = container.button("Enviar", on_click=(st.write(Title, Desc)))
+    conn = bd.connect("banco.db", check_same_thread = False)
+    Ent = ('''
+                        update Ticket 
+                        set Titlo = ?, Desc = ? , Setor = ?''', Title, Desc, os.uname())
+    c = conn.cursor()
+    c.execute(Ent, conn)
+    conn.commit()
+    
+    def popupmsg():
+        popup = tk.Tk()
+        popup.wm_title(Title)
+        label = ttk.Label(popup, text= dados, font=NORM_FONT)
+        label.pack(side='top', fill='x', pady=20)
+        B1 = ttk.Button(popup, text="Enviar", command= popup.destroy)
+        B1.pack()
+        popup.mainloop()
+    
+    container.button(label='Enviar', on_click=(popupmsg))
+
+
     container.button("Cancelar", type="primary")
     
-    modal = Modal(Key = "Demo key", title = )
+
+   
     
     
             
